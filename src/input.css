@@ -336,6 +336,11 @@
     color: #25f4ee;
   }
 
+  .wallet-dialog-status a {
+    color: #25f4ee;
+    font-weight: 800;
+  }
+
   .wallet-button.is-connected {
     border-color: #25f4ee !important;
     color: #25f4ee !important;

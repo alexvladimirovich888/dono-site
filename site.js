@@ -193,16 +193,31 @@ function initializeWalletConnector() {
 
   const dialog = modal.querySelector(".wallet-dialog");
   const status = modal.querySelector(".wallet-dialog-status");
+  const metaMaskOption = modal.querySelector('[data-wallet="metamask"]');
+  const phantomOption = modal.querySelector('[data-wallet="phantom"]');
+  let announcedMetaMask = null;
   let lastFocused = null;
 
   function getMetaMask() {
     const ethereum = window.ethereum;
-    return ethereum?.providers?.find((provider) => provider.isMetaMask)
+    return announcedMetaMask
+      || ethereum?.providers?.find((provider) => provider.isMetaMask)
       || (ethereum?.isMetaMask ? ethereum : null);
   }
 
   function getPhantom() {
     return window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null);
+  }
+
+  function refreshAvailability() {
+    const metaMaskHint = metaMaskOption.querySelector("small");
+    const phantomHint = phantomOption.querySelector("small");
+    if (metaMaskHint) metaMaskHint.textContent = getMetaMask()
+      ? "Extension detected · Ethereum"
+      : "Not detected · Install extension";
+    if (phantomHint) phantomHint.textContent = getPhantom()
+      ? "Extension detected · Solana"
+      : "Not detected · Install extension";
   }
 
   function shortenAddress(address) {
@@ -225,11 +240,26 @@ function initializeWalletConnector() {
     status.dataset.state = state;
   }
 
+  function setInstallStatus(wallet, url) {
+    status.replaceChildren(
+      `${wallet} is not available in this browser. Open TokPad in Chrome or Edge with the extension enabled. `,
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.textContent = `Install ${wallet}`;
+    status.append(link);
+    status.dataset.state = "error";
+  }
+
   function openModal(event) {
     lastFocused = event.currentTarget;
     modal.hidden = false;
     document.body.classList.add("wallet-modal-open");
     setStatus("");
+    window.dispatchEvent(new Event("eip6963:requestProvider"));
+    refreshAvailability();
     dialog.querySelector("[data-wallet]")?.focus();
   }
 
@@ -242,8 +272,7 @@ function initializeWalletConnector() {
   async function connectMetaMask() {
     const provider = getMetaMask();
     if (!provider) {
-      setStatus("MetaMask is not installed. Opening the official download page.", "error");
-      window.open("https://metamask.io/download/", "_blank", "noopener,noreferrer");
+      setInstallStatus("MetaMask", "https://metamask.io/download/");
       return;
     }
     try {
@@ -254,15 +283,19 @@ function initializeWalletConnector() {
       setStatus("MetaMask connected.", "success");
       window.setTimeout(closeModal, 500);
     } catch (error) {
-      setStatus(error?.code === 4001 ? "Connection request rejected." : "Could not connect MetaMask.", "error");
+      const message = error?.code === 4001
+        ? "Connection request rejected."
+        : error?.code === -32002
+          ? "A MetaMask connection request is already open."
+          : "Could not connect MetaMask. Check that the extension is unlocked and allowed on this site.";
+      setStatus(message, "error");
     }
   }
 
   async function connectPhantom() {
     const provider = getPhantom();
     if (!provider) {
-      setStatus("Phantom is not installed. Opening the official download page.", "error");
-      window.open("https://phantom.com/download", "_blank", "noopener,noreferrer");
+      setInstallStatus("Phantom", "https://phantom.com/download");
       return;
     }
     try {
@@ -274,7 +307,12 @@ function initializeWalletConnector() {
       setStatus("Phantom connected.", "success");
       window.setTimeout(closeModal, 500);
     } catch (error) {
-      setStatus(error?.code === 4001 ? "Connection request rejected." : "Could not connect Phantom.", "error");
+      setStatus(
+        error?.code === 4001
+          ? "Connection request rejected."
+          : "Could not connect Phantom. Check that the extension is unlocked and allowed on this site.",
+        "error",
+      );
     }
   }
 
@@ -285,6 +323,15 @@ function initializeWalletConnector() {
   modal.querySelectorAll("[data-wallet-close]").forEach((button) => button.addEventListener("click", closeModal));
   modal.querySelector('[data-wallet="metamask"]').addEventListener("click", connectMetaMask);
   modal.querySelector('[data-wallet="phantom"]').addEventListener("click", connectPhantom);
+  window.addEventListener("eip6963:announceProvider", (event) => {
+    const detail = event.detail;
+    if (detail?.provider?.isMetaMask || detail?.info?.rdns === "io.metamask") {
+      announcedMetaMask = detail.provider;
+      refreshAvailability();
+    }
+  });
+  window.addEventListener("phantom#initialized", refreshAvailability);
+  window.addEventListener("solana#initialized", refreshAvailability);
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modal.hidden) closeModal();
   });
@@ -295,6 +342,8 @@ function initializeWalletConnector() {
   }).catch(() => {});
   const phantom = getPhantom();
   if (phantom?.isConnected && phantom.publicKey) updateWalletButtons("Phantom", phantom.publicKey.toString());
+  window.dispatchEvent(new Event("eip6963:requestProvider"));
+  refreshAvailability();
 }
 
 function initializeLaunchForm() {
