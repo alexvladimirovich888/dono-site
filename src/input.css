@@ -72,14 +72,24 @@
     filter: drop-shadow(2px 2px 0 rgba(240, 15, 117, 0.55));
   }
 
+  .project-logo {
+    display: inline-grid;
+    width: 36px;
+    height: 36px;
+    flex: none;
+    place-items: center;
+    font-size: 28px;
+    line-height: 1;
+  }
+
   .tiktok-brand-name {
-    @apply text-sm font-black text-white;
-    letter-spacing: 0.08em;
+    @apply text-base font-black text-white;
+    letter-spacing: 0;
   }
 
   .tiktok-footer-logo {
     @apply inline-flex items-center gap-3 text-sm font-black text-white;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
   }
 
   .tiktok-platform-icon {
@@ -154,6 +164,27 @@
   .tiktok-floating-icon.hero-coin-channel {
     background: var(--color-accent);
     box-shadow: 8px 8px 0 #f00f75, -3px -3px 0 rgba(37, 244, 238, 0.8);
+  }
+
+  .lv-upload.has-artwork {
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
+  }
+
+  .tokpad-form-status {
+    min-height: 20px;
+    margin: 0 0 10px;
+    color: var(--dono-text-2);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .tokpad-form-status[data-state="error"] {
+    color: #ff8dbf;
+  }
+
+  .tokpad-form-status[data-state="success"] {
+    color: #25f4ee;
   }
 
   :is([class*="card"], .page-heading, .hero-panel, .token-price-chart) {

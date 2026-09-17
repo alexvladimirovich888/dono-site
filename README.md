@@ -1,4 +1,4 @@
-# TokLaunch
+# TokPad
 
 TikTok-inspired launchpad for community tokens that support TikTok creators.
 
