@@ -1,0 +1,288 @@
+@import "tailwindcss";
+@source "../*.html";
+@source "../site.js";
+
+@theme static {
+  --color-primary: #f00f75;
+  --color-accent: #7b2cbf;
+  --color-background: #0a0a0a;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+}
+
+@layer base {
+  :root {
+    --dono-black: #0a0a0a;
+    --dono-bg: #0a0a0a;
+    --dono-surface: #151217;
+    --dono-raised: #211923;
+    --dono-line: #3a293d;
+    --dono-ice: #ffffff;
+    --dono-text-2: #b9acba;
+    --dono-volt: #f00f75;
+    --dono-volt-deep: #c4085d;
+    --dono-ultra: #7b2cbf;
+    --dono-font: "Inter", "Segoe UI", sans-serif;
+    color-scheme: dark;
+  }
+
+  html {
+    background: var(--color-background);
+  }
+
+  body {
+    @apply m-0 bg-background font-sans text-white antialiased;
+    background-image:
+      linear-gradient(rgba(240, 15, 117, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(123, 44, 191, 0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+    letter-spacing: 0;
+  }
+
+  ::selection {
+    @apply bg-primary text-white;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary) !important;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .app-shell,
+  .main-content,
+  main {
+    background-color: transparent !important;
+  }
+
+  .sidebar,
+  .mobile-header,
+  footer {
+    background: rgba(10, 10, 10, 0.94) !important;
+    border-color: var(--dono-line) !important;
+    backdrop-filter: blur(18px);
+  }
+
+  .brand {
+    @apply inline-flex items-center gap-2.5;
+  }
+
+  .tiktok-logo {
+    @apply grid size-9 shrink-0 place-items-center rounded-full bg-cyan-400 text-lg font-black text-black;
+    box-shadow: 3px 0 0 var(--color-primary);
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    text-transform: lowercase;
+  }
+
+  .tiktok-brand-name {
+    @apply text-sm font-black text-white;
+    letter-spacing: 0.08em;
+  }
+
+  .tiktok-footer-logo {
+    @apply inline-flex items-center gap-3 text-sm font-black text-white;
+    letter-spacing: 0.08em;
+  }
+
+  .tiktok-platform-icon {
+    @apply inline-grid size-6 place-items-center rounded-full bg-cyan-400 text-xs font-black text-black;
+    box-shadow: 2px 0 0 var(--color-primary);
+    font-style: italic;
+  }
+
+  .nav-link {
+    @apply transition-colors duration-200;
+    border-radius: 8px !important;
+  }
+
+  .nav-link:hover,
+  .nav-link.active,
+  .nav-link[aria-current="page"] {
+    color: var(--color-primary) !important;
+    background: rgba(240, 15, 117, 0.1) !important;
+  }
+
+  .nav-link svg {
+    filter: drop-shadow(2px 0 0 rgba(37, 244, 238, 0.35));
+  }
+
+  :is(button, .button, .btn, [class*="button"]):not(:disabled) {
+    transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  :is(button, .button, .btn, [class*="button"]):not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(240, 15, 117, 0.2);
+  }
+
+  :is(.primary-button, .btn-primary, .hero-primary, [class*="primary"]):not([class*="identity"]) {
+    border-color: var(--color-primary) !important;
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 0 #7b2cbf !important;
+  }
+
+  .rolling-amount,
+  .tpc-change,
+  [class*="amount-positive"] {
+    color: var(--color-primary) !important;
+  }
+
+  button.active,
+  button.active *,
+  option:checked {
+    color: var(--color-primary) !important;
+  }
+
+  .preview-route-ends strong,
+  .streamer-profile-stats strong,
+  .home-payment-row strong {
+    color: var(--color-primary) !important;
+  }
+
+  .tiktok-floating-icon {
+    display: grid !important;
+    aspect-ratio: 1;
+    height: auto !important;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-size: clamp(32px, 4vw, 58px);
+    line-height: 1;
+    box-shadow: 8px 8px 0 #7b2cbf, -3px -3px 0 rgba(37, 244, 238, 0.8);
+  }
+
+  .tiktok-floating-icon.hero-coin-channel {
+    background: var(--color-accent);
+    box-shadow: 8px 8px 0 #f00f75, -3px -3px 0 rgba(37, 244, 238, 0.8);
+  }
+
+  :is([class*="card"], .page-heading, .hero-panel, .token-price-chart) {
+    border-color: var(--dono-line) !important;
+    border-radius: 8px !important;
+    background-color: rgba(21, 18, 23, 0.96) !important;
+  }
+
+  :is([class*="card"], .token-row, .streamer-row, .trending-token) {
+    transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  :is([class*="card"], .token-row, .streamer-row, .trending-token):hover {
+    border-color: rgba(240, 15, 117, 0.62) !important;
+    box-shadow: 0 14px 36px rgba(123, 44, 191, 0.16);
+  }
+
+  :is(a, button)[class*="link"]:hover {
+    color: var(--color-primary) !important;
+  }
+
+  .page-heading h1,
+  .hero h1,
+  .hero-title {
+    color: #ffffff !important;
+    text-shadow: 3px 3px 0 rgba(123, 44, 191, 0.55);
+    letter-spacing: 0 !important;
+  }
+
+  .badge,
+  [class*="badge"],
+  [class*="pill"],
+  [class*="tag"] {
+    border-color: rgba(240, 15, 117, 0.35) !important;
+    background-color: rgba(123, 44, 191, 0.16) !important;
+  }
+
+  .static-mobile-nav {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .tiktok-enter {
+    animation: tiktok-enter 480ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+@keyframes tiktok-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  main > * {
+    animation: tiktok-enter 480ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  main > *:nth-child(2) {
+    animation-delay: 70ms;
+  }
+
+  main > *:nth-child(3) {
+    animation-delay: 140ms;
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    padding-bottom: 72px;
+  }
+
+  .static-mobile-nav {
+    position: fixed;
+    z-index: 1000;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    min-height: 66px;
+    padding: 6px max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+    border-top: 1px solid var(--dono-line);
+    background: rgba(10, 10, 10, 0.96);
+    backdrop-filter: blur(18px);
+  }
+
+  .static-mobile-nav a {
+    display: grid;
+    grid-template-rows: 22px auto;
+    place-items: center;
+    min-width: 0;
+    padding: 5px 2px;
+    color: var(--dono-text-2);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .static-mobile-nav a::before {
+    color: currentColor;
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .static-mobile-nav a[data-icon="Home"]::before { content: "⌂"; }
+  .static-mobile-nav a[data-icon="Explore"]::before { content: "⌕"; }
+  .static-mobile-nav a[data-icon="Support"]::before { content: "♥"; }
+  .static-mobile-nav a[data-icon="Launch"]::before { content: "+"; }
+  .static-mobile-nav a[data-icon="Flow"]::before { content: "↗"; }
+
+  .static-mobile-nav a[aria-current="page"] {
+    color: var(--color-primary);
+    text-shadow: 1px 0 0 rgba(37, 244, 238, 0.55);
+  }
+
+  :is([class*="card"], .page-heading, .hero-panel, .token-price-chart) {
+    border-radius: 8px !important;
+  }
+}

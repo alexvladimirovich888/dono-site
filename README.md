@@ -1,6 +1,6 @@
-# dono
+# TokLaunch
 
-Static multi-page snapshot of the dono website, assembled from the downloaded route exports.
+TikTok-inspired launchpad for community tokens that support TikTok creators.
 
 ## Pages
 
@@ -11,4 +11,13 @@ Static multi-page snapshot of the dono website, assembled from the downloaded ro
 - Capital flow: `flow.html`
 - Docs: `docs.html`
 
-The site is intended for GitHub Pages and does not require a build step.
+## Styling
+
+The production stylesheet is generated with Tailwind CSS 4 from `src/input.css`.
+Custom theme colors are defined in both `tailwind.config.js` and the Tailwind `@theme` block:
+
+- Primary: `#f00f75`
+- Accent: `#7b2cbf`
+- Background: `#0a0a0a`
+
+The compiled site is ready for GitHub Pages and does not require a build step at runtime.
