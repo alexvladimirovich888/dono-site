@@ -187,6 +187,17 @@
     color: #25f4ee;
   }
 
+  .tokpad-added-creator .token-card-art > .token-art-link > .token-image {
+    object-position: center top;
+  }
+
+  .tokpad-added-creator .token-contract span {
+    max-width: 12ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   :is([class*="card"], .page-heading, .hero-panel, .token-price-chart) {
     border-color: var(--dono-line) !important;
     border-radius: 8px !important;
@@ -292,17 +303,12 @@
     text-decoration: none;
   }
 
-  .static-mobile-nav a::before {
+  .static-mobile-nav a svg {
+    width: 20px;
+    height: 20px;
     color: currentColor;
-    font-size: 19px;
-    line-height: 1;
+    fill: currentColor;
   }
-
-  .static-mobile-nav a[data-icon="Home"]::before { content: "\2302"; }
-  .static-mobile-nav a[data-icon="Explore"]::before { content: "\2315"; }
-  .static-mobile-nav a[data-icon="Support"]::before { content: "\2665"; }
-  .static-mobile-nav a[data-icon="Launch"]::before { content: "+"; }
-  .static-mobile-nav a[data-icon="Flow"]::before { content: "\2197"; }
 
   .static-mobile-nav a[aria-current="page"] {
     color: var(--color-primary);

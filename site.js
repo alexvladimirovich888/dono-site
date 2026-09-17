@@ -1,9 +1,9 @@
 const pages = [
-  ["Home", "index.html"],
-  ["Explore", "explore.html"],
-  ["Support", "donos.html"],
-  ["Launch", "launch.html"],
-  ["Flow", "flow.html"],
+  ["Home", "index.html", "Home"],
+  ["Explore", "explore.html", "Explore"],
+  ["Support", "donos.html", "Creator support"],
+  ["Launch", "launch.html", "Launch"],
+  ["Flow", "flow.html", "Capital flow"],
 ];
 
 const currentPage = location.pathname.split("/").pop() || "index.html";
@@ -298,15 +298,119 @@ function initializeLaunchForm() {
 
 initializeLaunchForm();
 
+const topTikTokCreators = [
+  { name: "Khaby Lame", handle: "khaby.lame", ticker: "KHABY", followers: "162.8M", avatar: "khaby-lame.jpg" },
+  { name: "Charli D'Amelio", handle: "charlidamelio", ticker: "CHARLI", followers: "159.3M", avatar: "charli-damelio.jpg" },
+  { name: "MrBeast", handle: "mrbeast", ticker: "MRBEAST", followers: "140.1M", avatar: "mrbeast.jpg" },
+  { name: "Bella Poarch", handle: "bellapoarch", ticker: "BELLA", followers: "91.7M", avatar: "bella-poarch.jpg" },
+  { name: "Addison Rae", handle: "addisonre", ticker: "ADDISON", followers: "87.8M", avatar: "addison-rae.jpg" },
+  { name: "Willie Salim", handle: "williesalim", ticker: "WILLIE", followers: "87M", avatar: "willie-salim.jpg" },
+  { name: "Zach King", handle: "zachking", ticker: "ZACH", followers: "86.9M", avatar: "zach-king.jpg" },
+  { name: "Kimberly Loaiza", handle: "kimberly.loaiza", ticker: "KIM", followers: "83.4M", avatar: "kimberly-loaiza.jpg" },
+  { name: "BTS", handle: "bts_official_bighit", ticker: "BTS", followers: "80.8M", avatar: "bts.jpg" },
+  { name: "Dwayne Johnson", handle: "therock", ticker: "ROCK", followers: "79.7M", avatar: "dwayne-johnson.jpg" },
+  { name: "Will Smith", handle: "willsmith", ticker: "WILL", followers: "78.2M", avatar: "will-smith.jpg" },
+  { name: "Domelipa", handle: "domelipa", ticker: "DOME", followers: "75.4M", avatar: "domelipa.jpg" },
+  { name: "Billie Eilish", handle: "billieeilish", ticker: "BILLIE", followers: "74.9M", avatar: "billie-eilish.jpg" },
+  { name: "Meicy Villia", handle: "vilmeijuga", ticker: "MEICY", followers: "73.7M", avatar: "meicy-villia.jpg" },
+  { name: "CZN Burak", handle: "cznburak", ticker: "BURAK", followers: "73.5M", avatar: "czn-burak.jpg" },
+  { name: "Lamine Yamal", handle: "lamine.yamal", ticker: "YAMAL", followers: "69.7M", avatar: "lamine-yamal.jpg" },
+  { name: "Jason Derulo", handle: "jasonderulo", ticker: "DERULO", followers: "66.3M", avatar: "jason-derulo.jpg" },
+  { name: "Kylie Jenner", handle: "kyliejenner", ticker: "KYLIE", followers: "59.7M", avatar: "kylie-jenner.jpg" },
+  { name: "Aliev Omar", handle: "omari.to", ticker: "OMARI", followers: "59.5M", avatar: "aliev-omar.jpg" },
+  { name: "Selena Gomez", handle: "selenagomez", ticker: "SELENA", followers: "58.6M", avatar: "selena-gomez.jpg" },
+];
+
+function initializeTopTikTokCreators() {
+  const grid = document.querySelector(".explore-token-grid");
+  const template = grid?.querySelector(".token-card");
+  if (!grid || !template || grid.querySelector(".tokpad-added-creator")) return;
+
+  topTikTokCreators.forEach((creator, index) => {
+    const card = template.cloneNode(true);
+    const profileUrl = `https://www.tiktok.com/@${creator.handle}`;
+    const avatarUrl = `assets/creators/${creator.avatar}`;
+    card.classList.add("tokpad-added-creator");
+    card.dataset.creatorRank = String(index + 1);
+
+    for (const link of card.querySelectorAll("a")) {
+      link.href = profileUrl;
+      link.target = "_blank";
+      link.rel = "noreferrer";
+      link.removeAttribute("data-discover");
+    }
+
+    const artLink = card.querySelector(".token-art-link");
+    if (artLink) artLink.setAttribute("aria-label", `View ${creator.name} on TikTok`);
+
+    const artwork = card.querySelector(".token-card-art .token-image");
+    if (artwork) {
+      artwork.src = avatarUrl;
+      artwork.alt = `${creator.name} artwork`;
+      artwork.loading = "lazy";
+      artwork.dataset.imageState = "loaded";
+    }
+
+    const recipient = card.querySelector(".token-recipient-pill");
+    const recipientName = recipient?.querySelector(":scope > span:last-child");
+    const recipientAvatar = recipient?.querySelector(".avatar");
+    if (recipientName) recipientName.textContent = creator.name;
+    if (recipientAvatar) {
+      recipientAvatar.src = avatarUrl;
+      recipientAvatar.alt = `${creator.name} portrait`;
+      recipientAvatar.dataset.imageState = "loaded";
+    }
+
+    const title = card.querySelector(".token-card-title");
+    const titleName = title?.querySelector("h3");
+    const titleTicker = title?.querySelector("span");
+    if (titleName) titleName.textContent = creator.name;
+    if (titleTicker) titleTicker.textContent = creator.ticker;
+
+    const figureValues = card.querySelectorAll(".token-card-figures strong");
+    figureValues.forEach((value) => { value.textContent = "$0"; });
+    const figureGroups = card.querySelectorAll(".token-card-figures > span");
+    if (figureGroups[0]) {
+      figureGroups[0].title = "TokPad community token is not launched yet.";
+      figureGroups[0].setAttribute("aria-label", "Market cap $0. Token not launched.");
+    }
+
+    const statusLines = card.querySelectorAll(".token-funding-wait");
+    if (statusLines[0]) statusLines[0].textContent = `Global creator #${index + 1} · ${creator.followers} TikTok followers.`;
+    if (statusLines[1]) statusLines[1].textContent = "TokPad community token ready to launch.";
+
+    const contract = card.querySelector(".token-contract");
+    const contractText = contract?.querySelector("span");
+    if (contract) {
+      contract.setAttribute("aria-label", `Copy @${creator.handle}`);
+      contract.addEventListener("click", async () => {
+        await navigator.clipboard?.writeText(`@${creator.handle}`);
+        if (contractText) contractText.textContent = "Copied";
+      });
+    }
+    if (contractText) contractText.textContent = `@${creator.handle}`;
+
+    grid.insertBefore(card, template);
+  });
+
+  const count = document.querySelector(".results-count");
+  if (count) count.textContent = "Showing 44 of 58";
+}
+
+initializeTopTikTokCreators();
+
 const navigation = document.createElement("nav");
 navigation.className = "static-mobile-nav";
 navigation.setAttribute("aria-label", "Mobile navigation");
 
-for (const [label, href] of pages) {
+for (const [label, href, desktopLabel] of pages) {
   const link = document.createElement("a");
   link.href = href;
-  link.textContent = label;
-  link.dataset.icon = label;
+  const icon = document.querySelector(`.nav-link[aria-label="${desktopLabel}"] svg`)?.cloneNode(true);
+  if (icon) link.append(icon);
+  const text = document.createElement("span");
+  text.textContent = label;
+  link.append(text);
   if (href === currentPage) link.setAttribute("aria-current", "page");
   navigation.append(link);
 }
