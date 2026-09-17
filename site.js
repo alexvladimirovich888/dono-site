@@ -158,6 +158,145 @@ for (const socialGroup of document.querySelectorAll(".social-links")) {
   }
 }
 
+function initializeWalletConnector() {
+  const walletTriggers = [...document.querySelectorAll("button")].filter(
+    (button) => button.matches(".wallet-button") || /connect wallet/i.test(button.textContent),
+  );
+  if (!walletTriggers.length) return;
+
+  const modal = document.createElement("div");
+  modal.className = "wallet-modal";
+  modal.hidden = true;
+  modal.innerHTML = `
+    <div class="wallet-modal-backdrop" data-wallet-close></div>
+    <section class="wallet-dialog" role="dialog" aria-modal="true" aria-labelledby="wallet-dialog-title">
+      <button class="wallet-dialog-close" type="button" aria-label="Close wallet dialog" data-wallet-close>×</button>
+      <span class="project-logo" role="img" aria-label="TokPad logo">😊</span>
+      <h2 id="wallet-dialog-title">Connect wallet</h2>
+      <p>Choose a wallet to continue with TokPad.</p>
+      <div class="wallet-options">
+        <button class="wallet-option" type="button" data-wallet="metamask">
+          <span class="wallet-option-icon wallet-option-metamask">M</span>
+          <span><strong>MetaMask</strong><small>Ethereum wallet</small></span>
+          <span aria-hidden="true">›</span>
+        </button>
+        <button class="wallet-option" type="button" data-wallet="phantom">
+          <span class="wallet-option-icon wallet-option-phantom">P</span>
+          <span><strong>Phantom</strong><small>Solana wallet</small></span>
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+      <p class="wallet-dialog-status" role="status" aria-live="polite"></p>
+    </section>
+  `;
+  document.body.append(modal);
+
+  const dialog = modal.querySelector(".wallet-dialog");
+  const status = modal.querySelector(".wallet-dialog-status");
+  let lastFocused = null;
+
+  function getMetaMask() {
+    const ethereum = window.ethereum;
+    return ethereum?.providers?.find((provider) => provider.isMetaMask)
+      || (ethereum?.isMetaMask ? ethereum : null);
+  }
+
+  function getPhantom() {
+    return window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null);
+  }
+
+  function shortenAddress(address) {
+    return address.length > 12 ? `${address.slice(0, 6)}…${address.slice(-4)}` : address;
+  }
+
+  function updateWalletButtons(wallet, address) {
+    const label = `${wallet} ${shortenAddress(address)}`;
+    for (const trigger of walletTriggers) {
+      const text = trigger.querySelector("span") || trigger;
+      text.textContent = label;
+      trigger.classList.add("is-connected");
+      trigger.setAttribute("aria-label", `${wallet} wallet connected: ${address}`);
+      trigger.disabled = false;
+    }
+  }
+
+  function setStatus(message, state = "info") {
+    status.textContent = message;
+    status.dataset.state = state;
+  }
+
+  function openModal(event) {
+    lastFocused = event.currentTarget;
+    modal.hidden = false;
+    document.body.classList.add("wallet-modal-open");
+    setStatus("");
+    dialog.querySelector("[data-wallet]")?.focus();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    document.body.classList.remove("wallet-modal-open");
+    lastFocused?.focus();
+  }
+
+  async function connectMetaMask() {
+    const provider = getMetaMask();
+    if (!provider) {
+      setStatus("MetaMask is not installed. Opening the official download page.", "error");
+      window.open("https://metamask.io/download/", "_blank", "noopener,noreferrer");
+      return;
+    }
+    try {
+      setStatus("Confirm the request in MetaMask…");
+      const accounts = await provider.request({ method: "eth_requestAccounts" });
+      if (!accounts?.[0]) throw new Error("No account returned");
+      updateWalletButtons("MetaMask", accounts[0]);
+      setStatus("MetaMask connected.", "success");
+      window.setTimeout(closeModal, 500);
+    } catch (error) {
+      setStatus(error?.code === 4001 ? "Connection request rejected." : "Could not connect MetaMask.", "error");
+    }
+  }
+
+  async function connectPhantom() {
+    const provider = getPhantom();
+    if (!provider) {
+      setStatus("Phantom is not installed. Opening the official download page.", "error");
+      window.open("https://phantom.com/download", "_blank", "noopener,noreferrer");
+      return;
+    }
+    try {
+      setStatus("Confirm the request in Phantom…");
+      const response = await provider.connect();
+      const address = response?.publicKey?.toString() || provider.publicKey?.toString();
+      if (!address) throw new Error("No public key returned");
+      updateWalletButtons("Phantom", address);
+      setStatus("Phantom connected.", "success");
+      window.setTimeout(closeModal, 500);
+    } catch (error) {
+      setStatus(error?.code === 4001 ? "Connection request rejected." : "Could not connect Phantom.", "error");
+    }
+  }
+
+  walletTriggers.forEach((trigger) => {
+    trigger.disabled = false;
+    trigger.addEventListener("click", openModal);
+  });
+  modal.querySelectorAll("[data-wallet-close]").forEach((button) => button.addEventListener("click", closeModal));
+  modal.querySelector('[data-wallet="metamask"]').addEventListener("click", connectMetaMask);
+  modal.querySelector('[data-wallet="phantom"]').addEventListener("click", connectPhantom);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeModal();
+  });
+
+  const metaMask = getMetaMask();
+  metaMask?.request({ method: "eth_accounts" }).then((accounts) => {
+    if (accounts?.[0]) updateWalletButtons("MetaMask", accounts[0]);
+  }).catch(() => {});
+  const phantom = getPhantom();
+  if (phantom?.isConnected && phantom.publicKey) updateWalletButtons("Phantom", phantom.publicKey.toString());
+}
+
 function initializeLaunchForm() {
   const form = document.querySelector(".lv-form");
   if (!form) return;
@@ -297,6 +436,7 @@ function initializeLaunchForm() {
 }
 
 initializeLaunchForm();
+initializeWalletConnector();
 
 const topTikTokCreators = [
   { name: "Khaby Lame", handle: "khaby.lame", ticker: "KHABY", followers: "162.8M", avatar: "khaby-lame.jpg" },
