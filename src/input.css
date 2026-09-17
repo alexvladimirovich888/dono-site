@@ -68,11 +68,8 @@
   }
 
   .tiktok-logo {
-    @apply grid size-9 shrink-0 place-items-center rounded-full bg-cyan-400 text-lg font-black text-black;
-    box-shadow: 3px 0 0 var(--color-primary);
-    font-family: Arial, sans-serif;
-    font-style: italic;
-    text-transform: lowercase;
+    @apply size-9 shrink-0 object-contain;
+    filter: drop-shadow(2px 2px 0 rgba(240, 15, 117, 0.55));
   }
 
   .tiktok-brand-name {
@@ -86,9 +83,8 @@
   }
 
   .tiktok-platform-icon {
-    @apply inline-grid size-6 place-items-center rounded-full bg-cyan-400 text-xs font-black text-black;
-    box-shadow: 2px 0 0 var(--color-primary);
-    font-style: italic;
+    @apply inline-block size-6 shrink-0 object-contain;
+    filter: drop-shadow(1px 1px 0 rgba(240, 15, 117, 0.42));
   }
 
   .nav-link {
@@ -271,11 +267,11 @@
     line-height: 1;
   }
 
-  .static-mobile-nav a[data-icon="Home"]::before { content: "⌂"; }
-  .static-mobile-nav a[data-icon="Explore"]::before { content: "⌕"; }
-  .static-mobile-nav a[data-icon="Support"]::before { content: "♥"; }
+  .static-mobile-nav a[data-icon="Home"]::before { content: "\2302"; }
+  .static-mobile-nav a[data-icon="Explore"]::before { content: "\2315"; }
+  .static-mobile-nav a[data-icon="Support"]::before { content: "\2665"; }
   .static-mobile-nav a[data-icon="Launch"]::before { content: "+"; }
-  .static-mobile-nav a[data-icon="Flow"]::before { content: "↗"; }
+  .static-mobile-nav a[data-icon="Flow"]::before { content: "\2197"; }
 
   .static-mobile-nav a[aria-current="page"] {
     color: var(--color-primary);

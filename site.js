@@ -54,8 +54,10 @@ const textReplacements = [
   [/\bdonos\b/gi, "creator support"],
   [/\bdono\b/gi, "TikTok Launchpad"],
   [/TikTok creator is live/gi, "TikTok creator is active"],
+  [/TikTok TikTok creator/gi, "TikTok creator"],
   [/live-status/gi, "account activity"],
   [/\bchannel\b/gi, "TikTok account"],
+  [/TikTok\s+TikTok/gi, "TikTok"],
 ];
 
 function rewriteText(value) {
@@ -70,6 +72,12 @@ const description = document.querySelector('meta[name="description"]');
 if (description) {
   description.content = "Launch community tokens that turn creator fees into transparent support for TikTok creators.";
 }
+
+const youtubeCandidates = new Set(
+  document.querySelectorAll(
+    ".lv-platform-soon img, .hero-platform-soon img, .public-platform-soon img",
+  ),
+);
 
 const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
 const textNodes = [];
@@ -92,22 +100,40 @@ for (const link of document.querySelectorAll('a[href*="twitch.tv/"]')) {
 }
 
 for (const brand of document.querySelectorAll(".brand")) {
-  brand.innerHTML = '<span class="tiktok-logo" aria-hidden="true">t</span><span class="tiktok-brand-name">TOKLAUNCH</span>';
+  brand.innerHTML = '<img class="tiktok-logo" src="assets/tiktok-logo.png" alt=""><span class="tiktok-brand-name">TOKLAUNCH</span>';
 }
 
 for (const logo of document.querySelectorAll('img[alt="TikTok Launchpad"]')) {
   const replacement = document.createElement("span");
   replacement.className = "tiktok-footer-logo";
-  replacement.innerHTML = '<span class="tiktok-logo" aria-hidden="true">t</span><span>TOKLAUNCH</span>';
+  replacement.innerHTML = '<img class="tiktok-logo" src="assets/tiktok-logo.png" alt=""><span>TOKLAUNCH</span>';
   logo.replaceWith(replacement);
 }
 
-for (const icon of document.querySelectorAll('img[alt="TikTok"]')) {
-  const replacement = document.createElement("span");
+for (const icon of [...document.querySelectorAll("img[alt]")].filter(
+  (image) => image.alt.toLowerCase() === "tiktok",
+)) {
+  const originalSource = icon.getAttribute("src") || "";
+  let context = icon.parentElement;
+  for (let depth = 0; context && depth < 2 && !/coming soon/i.test(context.textContent); depth += 1) {
+    context = context.parentElement;
+  }
+  const isYouTube = youtubeCandidates.has(icon) || (
+    /kick\.svg/i.test(originalSource) && Boolean(context && /coming soon/i.test(context.textContent))
+  );
+  const platform = isYouTube ? "YouTube" : "TikTok";
+  const replacement = document.createElement("img");
   replacement.className = "tiktok-platform-icon";
-  replacement.setAttribute("aria-label", "TikTok");
-  replacement.textContent = "t";
+  replacement.src = isYouTube ? "assets/youtube-logo.png" : "assets/tiktok-logo.png";
+  replacement.alt = platform;
   icon.replaceWith(replacement);
+
+  if (isYouTube) {
+    const platformText = document.createTreeWalker(context, NodeFilter.SHOW_TEXT);
+    while (platformText.nextNode()) {
+      platformText.currentNode.nodeValue = platformText.currentNode.nodeValue.replace(/TikTok/g, "YouTube");
+    }
+  }
 }
 
 for (const illustration of document.querySelectorAll(".hero-coin")) {
