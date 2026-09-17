@@ -8,18 +8,18 @@ const pages = [
 
 const currentPage = location.pathname.split("/").pop() || "index.html";
 const pageTitles = {
-  "index.html": "Home · TokPad",
-  "explore.html": "Explore · TokPad",
-  "donos.html": "Creator Support · TokPad",
-  "launch.html": "Launch · TokPad",
-  "flow.html": "Capital Flow · TokPad",
-  "docs.html": "Docs · TokPad",
+  "index.html": "Home · Trendify",
+  "explore.html": "Explore · Trendify",
+  "donos.html": "Creator Support · Trendify",
+  "launch.html": "Launch · Trendify",
+  "flow.html": "Capital Flow · Trendify",
+  "docs.html": "Docs · Trendify",
 };
 const textReplacements = [
   [/Launch a token\. Back the stream\./gi, "Launch a token. Back TikTok creators."],
   [/Back the stream\./gi, "Back TikTok creators."],
   [/^Donos$/gi, "Creator support"],
-  [/What is dono\?/gi, "What is TokPad?"],
+  [/What is dono\?/gi, "What is Trendify?"],
   [/Funding is the start\. Delivery is the dono\./gi, "Funding starts support. Delivery completes it."],
   [/Support a streamer/gi, "Support a TikTok creator"],
   [/Top streamers/gi, "Top TikTok creators"],
@@ -29,8 +29,8 @@ const textReplacements = [
   [/@\s*twitch_username/gi, "@tiktok_creator"],
   [/twitch_username/gi, "tiktok_creator"],
   [/@your_streamer/gi, "@tiktok_creator"],
-  [/@donotoyou/gi, "@tokpad"],
-  [/@donodotyou/gi, "@tokpad"],
+  [/@donotoyou/gi, "@trendify"],
+  [/@donodotyou/gi, "@trendify"],
   [/Chat Cat/gi, "TikTok Star"],
   [/^CHAT$/gi, "TOK"],
   [/\bchat\b/gi, "comments and likes"],
@@ -53,7 +53,7 @@ const textReplacements = [
   [/\bgift\b/gi, "support"],
   [/\bdono['’]d\b/gi, "supported"],
   [/\bdonos\b/gi, "creator support"],
-  [/\bdono\b/gi, "TokPad"],
+  [/\bdono\b/gi, "Trendify"],
   [/TikTok creator is live/gi, "TikTok creator is active"],
   [/TikTok TikTok creator/gi, "TikTok creator"],
   [/live-status/gi, "account activity"],
@@ -68,10 +68,10 @@ function rewriteText(value) {
   );
 }
 
-document.title = pageTitles[currentPage] || "TokPad";
+document.title = pageTitles[currentPage] || "Trendify";
 const description = document.querySelector('meta[name="description"]');
 if (description) {
-  description.content = "Launch community tokens that turn creator fees into transparent support for TikTok creators.";
+  description.content = "Trendify launches community tokens that turn creator fees into transparent support for TikTok creators.";
 }
 
 const youtubeCandidates = new Set(
@@ -101,14 +101,24 @@ for (const link of document.querySelectorAll('a[href*="twitch.tv/"]')) {
 }
 
 for (const brand of document.querySelectorAll(".brand")) {
-  brand.innerHTML = '<span class="project-logo" role="img" aria-label="TokPad logo">😊</span><span class="tiktok-brand-name">TokPad</span>';
+  brand.innerHTML = brand.closest(".sidebar-account")
+    ? '<img class="trendify-wordmark" src="assets/trendify-wordmark.jpg" alt="Trendify">'
+    : '<img class="project-logo" src="assets/trendify-mark.jpg" alt="Trendify logo"><span class="tiktok-brand-name">Trendify</span>';
 }
 
-for (const logo of document.querySelectorAll('img[alt="TokPad"]')) {
-  const replacement = document.createElement("span");
-  replacement.className = "tiktok-footer-logo";
-  replacement.innerHTML = '<span class="project-logo" role="img" aria-label="TokPad logo">😊</span><span>TokPad</span>';
-  logo.replaceWith(replacement);
+for (const logo of document.querySelectorAll('img[alt="Trendify"]')) {
+  if (logo.closest(".sidebar-bottom")) {
+    const replacement = document.createElement("span");
+    replacement.className = "tiktok-footer-logo";
+    replacement.innerHTML = '<img class="trendify-wordmark" src="assets/trendify-wordmark.jpg" alt="Trendify">';
+    logo.replaceWith(replacement);
+  } else {
+    const replacement = document.createElement("img");
+    replacement.className = "project-logo";
+    replacement.src = "assets/trendify-mark.jpg";
+    replacement.alt = "Trendify logo";
+    logo.replaceWith(replacement);
+  }
 }
 
 for (const icon of [...document.querySelectorAll("img[alt]")].filter(
@@ -149,12 +159,12 @@ for (const socialGroup of document.querySelectorAll(".social-links")) {
   const links = [...socialGroup.querySelectorAll("a")];
   links.slice(2).forEach((link) => link.remove());
   if (links[0]) {
-    links[0].href = "https://x.com/tokpad";
-    links[0].setAttribute("aria-label", "TokPad on X");
+    links[0].href = "https://x.com/trendify";
+    links[0].setAttribute("aria-label", "Trendify on X");
   }
   if (links[1]) {
-    links[1].href = "https://www.tiktok.com/@tokpad";
-    links[1].setAttribute("aria-label", "TokPad on TikTok");
+    links[1].href = "https://www.tiktok.com/@trendify";
+    links[1].setAttribute("aria-label", "Trendify on TikTok");
   }
 }
 
@@ -171,17 +181,17 @@ function initializeWalletConnector() {
     <div class="wallet-modal-backdrop" data-wallet-close></div>
     <section class="wallet-dialog" role="dialog" aria-modal="true" aria-labelledby="wallet-dialog-title">
       <button class="wallet-dialog-close" type="button" aria-label="Close wallet dialog" data-wallet-close>×</button>
-      <span class="project-logo" role="img" aria-label="TokPad logo">😊</span>
+      <img class="project-logo" src="assets/trendify-mark.jpg" alt="Trendify logo">
       <h2 id="wallet-dialog-title">Connect wallet</h2>
-      <p>Choose a wallet to continue with TokPad.</p>
+      <p>Choose a wallet to continue with Trendify.</p>
       <div class="wallet-options">
         <button class="wallet-option" type="button" data-wallet="metamask">
-          <span class="wallet-option-icon wallet-option-metamask">M</span>
+          <img class="wallet-option-icon" src="assets/metamask-logo.svg" alt="" aria-hidden="true">
           <span><strong>MetaMask</strong><small>Ethereum wallet</small></span>
           <span aria-hidden="true">›</span>
         </button>
         <button class="wallet-option" type="button" data-wallet="phantom">
-          <span class="wallet-option-icon wallet-option-phantom">P</span>
+          <img class="wallet-option-icon" src="assets/phantom-logo.svg" alt="" aria-hidden="true">
           <span><strong>Phantom</strong><small>Solana wallet</small></span>
           <span aria-hidden="true">›</span>
         </button>
@@ -242,7 +252,7 @@ function initializeWalletConnector() {
 
   function setInstallStatus(wallet, url) {
     status.replaceChildren(
-      `${wallet} is not available in this browser. Open TokPad in Chrome or Edge with the extension enabled. `,
+      `${wallet} is not available in this browser. Open Trendify in Chrome or Edge with the extension enabled. `,
     );
     const link = document.createElement("a");
     link.href = url;
@@ -370,7 +380,7 @@ function initializeLaunchForm() {
   form.noValidate = true;
 
   const status = document.createElement("p");
-  status.className = "tokpad-form-status";
+  status.className = "trendify-form-status";
   status.setAttribute("role", "status");
   status.setAttribute("aria-live", "polite");
   formActions?.prepend(status);
@@ -476,7 +486,7 @@ function initializeLaunchForm() {
       creator: creatorInput.value.trim().replace(/^@/, ""),
       updatedAt: new Date().toISOString(),
     };
-    localStorage.setItem("tokpad-token-draft", JSON.stringify(draft));
+    localStorage.setItem("trendify-token-draft", JSON.stringify(draft));
     submitButton.textContent = "Draft created";
     setStatus("Token draft saved in this browser. Connect the production wallet backend to submit it on-chain.", "success");
   });
@@ -513,13 +523,13 @@ const topTikTokCreators = [
 function initializeTopTikTokCreators() {
   const grid = document.querySelector(".explore-token-grid");
   const template = grid?.querySelector(".token-card");
-  if (!grid || !template || grid.querySelector(".tokpad-added-creator")) return;
+  if (!grid || !template || grid.querySelector(".trendify-added-creator")) return;
 
   topTikTokCreators.forEach((creator, index) => {
     const card = template.cloneNode(true);
     const profileUrl = `https://www.tiktok.com/@${creator.handle}`;
     const avatarUrl = `assets/creators/${creator.avatar}`;
-    card.classList.add("tokpad-added-creator");
+    card.classList.add("trendify-added-creator");
     card.dataset.creatorRank = String(index + 1);
 
     for (const link of card.querySelectorAll("a")) {
@@ -560,13 +570,13 @@ function initializeTopTikTokCreators() {
     figureValues.forEach((value) => { value.textContent = "$0"; });
     const figureGroups = card.querySelectorAll(".token-card-figures > span");
     if (figureGroups[0]) {
-      figureGroups[0].title = "TokPad community token is not launched yet.";
+      figureGroups[0].title = "Trendify community token is not launched yet.";
       figureGroups[0].setAttribute("aria-label", "Market cap $0. Token not launched.");
     }
 
     const statusLines = card.querySelectorAll(".token-funding-wait");
     if (statusLines[0]) statusLines[0].textContent = `Global creator #${index + 1} · ${creator.followers} TikTok followers.`;
-    if (statusLines[1]) statusLines[1].textContent = "TokPad community token ready to launch.";
+    if (statusLines[1]) statusLines[1].textContent = "Trendify community token ready to launch.";
 
     const contract = card.querySelector(".token-contract");
     const contractText = contract?.querySelector("span");

@@ -73,13 +73,11 @@
   }
 
   .project-logo {
-    display: inline-grid;
     width: 36px;
     height: 36px;
     flex: none;
-    place-items: center;
-    font-size: 28px;
-    line-height: 1;
+    border-radius: 7px;
+    object-fit: cover;
   }
 
   .tiktok-brand-name {
@@ -90,6 +88,23 @@
   .tiktok-footer-logo {
     @apply inline-flex items-center gap-3 text-sm font-black text-white;
     letter-spacing: 0;
+  }
+
+  .trendify-wordmark {
+    width: 112px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .sidebar-account .brand-small {
+    width: 88px !important;
+    flex: none;
+  }
+
+  .sidebar-account .trendify-wordmark {
+    width: 88px !important;
+    height: 36px !important;
   }
 
   .tiktok-platform-icon {
@@ -171,7 +186,7 @@
     color: var(--color-primary) !important;
   }
 
-  .tokpad-form-status {
+  .trendify-form-status {
     min-height: 20px;
     margin: 0 0 10px;
     color: var(--dono-text-2);
@@ -179,19 +194,19 @@
     line-height: 1.5;
   }
 
-  .tokpad-form-status[data-state="error"] {
+  .trendify-form-status[data-state="error"] {
     color: #ff8dbf;
   }
 
-  .tokpad-form-status[data-state="success"] {
+  .trendify-form-status[data-state="success"] {
     color: #25f4ee;
   }
 
-  .tokpad-added-creator .token-card-art > .token-art-link > .token-image {
+  .trendify-added-creator .token-card-art > .token-art-link > .token-image {
     object-position: center top;
   }
 
-  .tokpad-added-creator .token-contract span {
+  .trendify-added-creator .token-contract span {
     max-width: 12ch;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -302,22 +317,9 @@
   }
 
   .wallet-option-icon {
-    display: grid;
     width: 40px;
     height: 40px;
-    place-items: center;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 900;
-  }
-
-  .wallet-option-metamask {
-    background: #e2761b;
-  }
-
-  .wallet-option-phantom {
-    background: #7b2cbf;
+    object-fit: contain;
   }
 
   .wallet-dialog-status {

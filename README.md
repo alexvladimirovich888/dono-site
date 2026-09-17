@@ -1,4 +1,4 @@
-# TokPad
+# Trendify
 
 TikTok-inspired launchpad for community tokens that support TikTok creators.
 
@@ -6,7 +6,7 @@ TikTok-inspired launchpad for community tokens that support TikTok creators.
 
 - Home: `index.html`
 - Explore: `explore.html`
-- Donos: `donos.html`
+- Creator Support: `donos.html`
 - Launch: `launch.html`
 - Capital flow: `flow.html`
 - Docs: `docs.html`
