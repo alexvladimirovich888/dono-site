@@ -168,6 +168,11 @@ for (const socialGroup of document.querySelectorAll(".social-links")) {
   }
 }
 
+for (const accountLink of document.querySelectorAll(".sidebar-account")) {
+  accountLink.href = "https://x.com/trendify";
+  accountLink.setAttribute("aria-label", "Trendify on X");
+}
+
 function initializeWalletConnector() {
   const walletTriggers = [...document.querySelectorAll("button")].filter(
     (button) => button.matches(".wallet-button") || /connect wallet/i.test(button.textContent),
